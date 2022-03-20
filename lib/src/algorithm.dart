@@ -6,18 +6,19 @@ typedef Algorithm AlgorithmFactory(List params, String salt);
 abstract class Algorithm {
   static final Map<String, AlgorithmFactory> _algorithms = {
     PBKDF2.id: (List params, String salt) {
-      return new PBKDF2(
-          blockLength: int.parse(params[0]),
-          iterationCount: int.parse(params[1]),
-          desiredKeyLength: int.parse(params[2]),
-          salt: salt);
+      return PBKDF2(
+        blockLength: int.parse(params[0]),
+        iterationCount: int.parse(params[1]),
+        desiredKeyLength: int.parse(params[2]),
+        salt: salt,
+      );
     },
   };
 
   /// Creates the Algorithm based on the given [hash] and using the [hash] encoded params.
   static Algorithm decode(String hash) {
     final parts = hash.split('\$');
-    final algoFactory = _algorithms[parts[1]];
+    final algoFactory = _algorithms[parts[1]]!;
     final algorithm = algoFactory(parts[2].split(','), parts[3]);
 
     return algorithm;
